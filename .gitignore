@@ -1,4 +1,10 @@
-# compiled output
+# Environments
+.env
+
+# Docker
+data
+
+# Compiled output
 /dist
 /node_modules
 
