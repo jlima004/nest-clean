@@ -3,7 +3,7 @@ import { INestApplication } from '@nestjs/common'
 import request from 'supertest'
 
 import { AppModule } from '@/infra/app.module'
-import { PrismaService } from '@/infra/prisma/prisma.service'
+import { PrismaService } from '@/infra/database/prisma/prisma.service'
 import { hash } from 'bcryptjs'
 
 describe('Authenticate (e2e)', () => {

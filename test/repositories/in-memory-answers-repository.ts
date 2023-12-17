@@ -17,14 +17,12 @@ export class InMemoryAnswersRepository implements AnswersRepository {
     DomainEvents.dispatchEventsForAggregate(answer.id)
   }
 
-  async save(answer: Answer): Promise<Answer> {
+  async save(answer: Answer): Promise<void> {
     const itemIndex = this.items.findIndex((item) => item.id === answer.id)
 
     this.items[itemIndex] = answer
 
     DomainEvents.dispatchEventsForAggregate(answer.id)
-
-    return this.items[itemIndex]
   }
 
   async delete(answer: Answer): Promise<void> {
