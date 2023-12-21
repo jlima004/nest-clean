@@ -2,7 +2,7 @@ import { InMemoryAnswersRepository } from 'test/repositories/in-memory-answers-r
 import { makeAnswer } from 'test/factories/make-answer'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { InMemoryQuestionsRepository } from 'test/repositories/in-memory-questions-repository'
-import { ChoseQuestionBestAnswerUseCase } from './chose-question-best-answer'
+import { ChooseQuestionBestAnswerUseCase } from './chose-question-best-answer'
 import { makeQuestion } from 'test/factories/make-question'
 import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
 import { InMemoryAnswerAttachmentsRepository } from 'test/repositories/in-memory-answer-attachments-repository'
@@ -12,7 +12,7 @@ let inMemoryQuestionAttachmentsRepository: InMemoryQuestionAttachmentsRepository
 let inMemoryAnswerAttachmentsRepository: InMemoryAnswerAttachmentsRepository
 let inMemoryQuestionsRepository: InMemoryQuestionsRepository
 let inMemoryAnswerRepository: InMemoryAnswersRepository
-let sut: ChoseQuestionBestAnswerUseCase
+let sut: ChooseQuestionBestAnswerUseCase
 
 describe('Chose Question Best Answer', () => {
   beforeEach(() => {
@@ -28,7 +28,7 @@ describe('Chose Question Best Answer', () => {
       inMemoryAnswerAttachmentsRepository,
     )
 
-    sut = new ChoseQuestionBestAnswerUseCase(
+    sut = new ChooseQuestionBestAnswerUseCase(
       inMemoryQuestionsRepository,
       inMemoryAnswerRepository,
     )
