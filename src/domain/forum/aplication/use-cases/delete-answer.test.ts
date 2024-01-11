@@ -5,9 +5,11 @@ import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
 import { InMemoryAnswerAttachmentsRepository } from 'test/repositories/in-memory-answer-attachments-repository'
 import { makeAnswerAttachment } from 'test/factories/make-answer-attachments'
+import { InMemoryStudentsRepository } from 'test/repositories/in-memory-students-repository'
 
 let inMemoryAnswerAttachmentsRepository: InMemoryAnswerAttachmentsRepository
 let inMemoryAnswerRepository: InMemoryAnswersRepository
+let inMemoryStudentsRepository: InMemoryStudentsRepository
 let sut: DeleteAnswerUseCase
 
 describe('Delete Answer', () => {
@@ -15,8 +17,11 @@ describe('Delete Answer', () => {
     inMemoryAnswerAttachmentsRepository =
       new InMemoryAnswerAttachmentsRepository()
 
+    inMemoryStudentsRepository = new InMemoryStudentsRepository()
+
     inMemoryAnswerRepository = new InMemoryAnswersRepository(
       inMemoryAnswerAttachmentsRepository,
+      inMemoryStudentsRepository,
     )
     sut = new DeleteAnswerUseCase(inMemoryAnswerRepository)
   })

@@ -9,7 +9,7 @@ import { z } from 'zod'
 
 import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
 import { FetchQuestionAnswersUseCase } from '@/domain/forum/aplication/use-cases/fetch-question-answers'
-import { AnswerPresenter } from '../presenters/answer-presenter'
+import { AnswerWithAuthorPresenter } from '../presenters/answer-with-author-presenter'
 
 const pageQueryParamSchema = z
   .string()
@@ -43,7 +43,7 @@ export class FetchQuestionAnswersController {
     const { answers } = result.value
 
     return {
-      answers: answers.map(AnswerPresenter.toHTTP),
+      answers: answers.map(AnswerWithAuthorPresenter.toHTTP),
     }
   }
 }

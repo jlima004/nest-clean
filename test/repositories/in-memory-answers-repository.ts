@@ -3,12 +3,15 @@ import { AnswersRepository } from '@/domain/forum/aplication/repositories/answer
 import { Answer } from '@/domain/forum/enterprise/entities/answer'
 import { AnswerAttachmentsRepository } from '../../src/domain/forum/aplication/repositories/answer-attachments-repository'
 import { DomainEvents } from '@/core/events/domain-events'
+import { AnswerWithAuthor } from '@/domain/forum/enterprise/entities/value-objects/answer-with-author'
+import { InMemoryStudentsRepository } from './in-memory-students-repository'
 
 export class InMemoryAnswersRepository implements AnswersRepository {
   public items: Answer[] = []
 
   constructor(
     private answerAttachmentsRepository: AnswerAttachmentsRepository,
+    private studentsRepository: InMemoryStudentsRepository,
   ) {}
 
   async create(answer: Answer): Promise<void> {
@@ -60,6 +63,37 @@ export class InMemoryAnswersRepository implements AnswersRepository {
     const answers = this.items
       .filter((item) => item.questionId.toString() === questionId)
       .slice((page - 1) * 20, page * 20)
+
+    return answers
+  }
+
+  async findManyByQuestionWithAuthor(
+    { page }: PaginationParams,
+    questionId: string,
+  ): Promise<AnswerWithAuthor[]> {
+    const answers = this.items
+      .filter((item) => item.questionId.toString() === questionId)
+      .slice((page - 1) * 20, page * 20)
+      .map((answer) => {
+        const author = this.studentsRepository.items.find((student) => {
+          return student.id.equals(answer.authorId)
+        })
+
+        if (!author) {
+          throw new Error(
+            `Author with ID "${answer.authorId.toString()}" does not exist.`,
+          )
+        }
+
+        return AnswerWithAuthor.create({
+          answerId: answer.id,
+          content: answer.content,
+          createdAt: answer.createdAt,
+          updatedAt: answer.updatedAt,
+          authorId: answer.authorId,
+          author: author.name,
+        })
+      })
 
     return answers
   }
