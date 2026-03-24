@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common'
 import { CurrentUser } from '@/infra/auth/current-user.decorator'
 import { z } from 'zod'
+import { ApiTags, ApiOperation, ApiResponse, ApiBadRequestResponse, ApiBearerAuth } from '@nestjs/swagger'
 
 import { UserPayload } from '@/infra/auth/jwt.strategy'
 import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
@@ -19,11 +20,16 @@ type CommentOnAnswerBodySchema = z.infer<typeof commentOnAnswerBodySchema>
 
 const bodyValidationPipe = new ZodValidationPipe(commentOnAnswerBodySchema)
 
+@ApiTags('Comentários')
+@ApiBearerAuth()
+@ApiBadRequestResponse({ description: 'Dados inválidos' })
 @Controller('/answers/:answerId/comments')
 export class CommentOnAnswerController {
   constructor(private commentOnAnswer: CommentOnAnswerUseCase) {}
 
   @Post()
+  @ApiOperation({ summary: 'Comentar em uma resposta' })
+  @ApiResponse({ status: 201, description: 'Comentário criado com sucesso' })
   async handle(
     @Body(bodyValidationPipe) body: CommentOnAnswerBodySchema,
     @CurrentUser() user: UserPayload,

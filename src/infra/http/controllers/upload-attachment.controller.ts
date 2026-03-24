@@ -9,10 +9,15 @@ import {
   UseInterceptors,
 } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
+import { ApiTags, ApiOperation, ApiResponse, ApiBadRequestResponse, ApiBearerAuth, ApiConsumes } from '@nestjs/swagger'
 
 import { UploadAndCreateAttachmentUseCase } from '@/domain/forum/aplication/use-cases/upload-and-create-attachment'
 import { InvalidAttachmentTypeError } from '@/domain/forum/aplication/use-cases/errors/invalid-attachment-type'
 
+@ApiTags('Anexos')
+@ApiBearerAuth()
+@ApiConsumes('multipart/form-data')
+@ApiBadRequestResponse({ description: 'Arquivo inválido ou tipo não permitido' })
 @Controller('/attachments')
 export class UploadAttachmentController {
   constructor(
@@ -20,6 +25,8 @@ export class UploadAttachmentController {
   ) {}
 
   @Post()
+  @ApiOperation({ summary: 'Fazer upload de arquivo (imagem ou PDF)' })
+  @ApiResponse({ status: 201, description: 'Arquivo uploaded com sucesso', schema: { example: { attachmentId: 'uuid-do-anexo' } } })
   @UseInterceptors(FileInterceptor('file'))
   async handle(
     @UploadedFile(

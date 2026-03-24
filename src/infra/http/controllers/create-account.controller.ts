@@ -8,6 +8,7 @@ import {
   UsePipes,
 } from '@nestjs/common'
 import { z } from 'zod'
+import { ApiTags, ApiOperation, ApiResponse, ApiConflictResponse, ApiBadRequestResponse } from '@nestjs/swagger'
 
 import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
 import { RegisterStudentUseCase } from '@/domain/forum/aplication/use-cases/register-student'
@@ -22,6 +23,9 @@ const createAccountBodySchema = z.object({
 
 type CreateAccountBodySchema = z.infer<typeof createAccountBodySchema>
 
+@ApiTags('Contas')
+@ApiBadRequestResponse({ description: 'Dados inválidos' })
+@ApiConflictResponse({ description: 'Email já cadastrado' })
 @Controller('/accounts')
 @Public()
 export class CreateAccountController {
@@ -29,6 +33,8 @@ export class CreateAccountController {
 
   @Post()
   @HttpCode(201)
+  @ApiOperation({ summary: 'Criar nova conta de usuário' })
+  @ApiResponse({ status: 201, description: 'Conta criada com sucesso' })
   @UsePipes(new ZodValidationPipe(createAccountBodySchema))
   async handle(@Body() body: CreateAccountBodySchema) {
     const { name, email, password } = body

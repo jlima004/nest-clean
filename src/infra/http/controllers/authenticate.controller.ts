@@ -7,6 +7,7 @@ import {
   UsePipes,
 } from '@nestjs/common'
 import { z } from 'zod'
+import { ApiTags, ApiOperation, ApiResponse, ApiUnauthorizedResponse, ApiBadRequestResponse } from '@nestjs/swagger'
 
 import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
 import { AuthenticateStudentUseCase } from '../../../domain/forum/aplication/use-cases/authenticate-student'
@@ -20,12 +21,17 @@ const authenticateBodySchema = z.object({
 
 type AuthenticateBodySchema = z.infer<typeof authenticateBodySchema>
 
+@ApiTags('Autenticação')
+@ApiBadRequestResponse({ description: 'Dados inválidos' })
+@ApiUnauthorizedResponse({ description: 'Credenciais inválidas' })
 @Controller('/sessions')
 @Public()
 export class AuthenticateController {
   constructor(private authenticateStudent: AuthenticateStudentUseCase) {}
 
   @Post()
+  @ApiOperation({ summary: 'Autenticar usuário e obter token JWT' })
+  @ApiResponse({ status: 200, description: 'Token JWT gerado com sucesso', schema: { example: { access_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...' } } })
   @UsePipes(new ZodValidationPipe(authenticateBodySchema))
   async handle(@Body() body: AuthenticateBodySchema) {
     const { email, password } = body

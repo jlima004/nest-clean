@@ -1,6 +1,10 @@
 # Environments
 .env
 .env.test
+.private.pem
+.public.pem
+private.pem
+public.pem
 
 # Docker
 data

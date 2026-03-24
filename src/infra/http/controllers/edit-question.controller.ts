@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common'
 import { CurrentUser } from '@/infra/auth/current-user.decorator'
 import { z } from 'zod'
+import { ApiTags, ApiOperation, ApiResponse, ApiBadRequestResponse, ApiBearerAuth } from '@nestjs/swagger'
 
 import { UserPayload } from '@/infra/auth/jwt.strategy'
 import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
@@ -22,12 +23,17 @@ type EditQuestionBodySchema = z.infer<typeof editQuestionBodySchema>
 
 const bodyValidationPipe = new ZodValidationPipe(editQuestionBodySchema)
 
+@ApiTags('Perguntas')
+@ApiBearerAuth()
+@ApiBadRequestResponse({ description: 'Dados inválidos' })
 @Controller('/questions/:id')
 export class EditQuestionController {
   constructor(private editQuestion: EditQuestionUseCase) {}
 
   @Put()
   @HttpCode(204)
+  @ApiOperation({ summary: 'Editar pergunta existente' })
+  @ApiResponse({ status: 204, description: 'Pergunta editada com sucesso' })
   async handle(
     @Body(bodyValidationPipe) body: EditQuestionBodySchema,
     @CurrentUser() user: UserPayload,

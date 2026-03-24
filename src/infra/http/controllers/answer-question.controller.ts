@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common'
 import { CurrentUser } from '@/infra/auth/current-user.decorator'
 import { z } from 'zod'
+import { ApiTags, ApiOperation, ApiResponse, ApiBadRequestResponse, ApiBearerAuth } from '@nestjs/swagger'
 
 import { UserPayload } from '@/infra/auth/jwt.strategy'
 import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
@@ -20,11 +21,16 @@ type AnswerQuestionBodySchema = z.infer<typeof answerQuestionBodySchema>
 
 const bodyValidationPipe = new ZodValidationPipe(answerQuestionBodySchema)
 
+@ApiTags('Respostas')
+@ApiBearerAuth()
+@ApiBadRequestResponse({ description: 'Dados inválidos' })
 @Controller('/questions/:questionId/answers')
 export class AnswerQuestionController {
   constructor(private answerQuestion: AnswerQuestionUseCase) {}
 
   @Post()
+  @ApiOperation({ summary: 'Responder uma pergunta' })
+  @ApiResponse({ status: 201, description: 'Resposta criada com sucesso' })
   async handle(
     @Body(bodyValidationPipe) body: AnswerQuestionBodySchema,
     @CurrentUser() user: UserPayload,
